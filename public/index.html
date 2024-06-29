@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Arquivo YAML</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            display: flex;
+            gap: 20px;
+        }
+        .forms-container {
+            flex: 1;
+        }
+        h1, h2 {
+            color: #0056b3;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #004494;
+        }
+        #file-content {
+            white-space: pre-wrap;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fafafa;
+            border-radius: 4px;
+            flex: 1;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="forms-container">
+        <h1>Editor de Arquivo YAML</h1>
+        <div>
+            <h2>Adicionar Texto</h2>
+            <form id="yaml-form">
+                <label for="url">URL:</label>
+                <input type="text" id="url" name="url" required>
+
+                <label for="matcher">Matcher:</label>
+                <input type="text" id="matcher" name="matcher" required>
+
+                <label for="download_path">Download Path:</label>
+                <input type="text" id="download_path" name="download_path" required>
+
+                <button type="button" onclick="addText()">Adicionar Texto</button>
+            </form>
+        </div>
+
+        <div>
+            <h2>Remover Texto</h2>
+            <form id="delete-form">
+                <label for="url-delete">URL:</label>
+                <input type="text" id="url-delete" name="url-delete" required>
+
+                <button type="button" onclick="deleteText()">Remover Texto</button>
+            </form>
+        </div>
+
+        <button onclick="viewFile()">Ver Conteúdo do Arquivo</button>
+    </div>
+    <div id="file-content"></div>
+</div>
+
+<script>
+    function addText() {
+        const url = document.getElementById('url').value;
+        const matcher = document.getElementById('matcher').value;
+        const download_path = document.getElementById('download_path').value;
+
+        if (url && matcher && download_path) {
+            fetch('/add-text', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url, matcher, download_path })
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                document.getElementById('yaml-form').reset(); 
+            })
+            .catch(error => console.error('Error:', error));
+        } else {
+            alert('Por favor, preencha todos os campos.');
+        }
+    }
+
+    function deleteText() {
+        const url = document.getElementById('url-delete').value;
+
+        if (url) {
+            fetch('/delete-text', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url })
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                document.getElementById('delete-form').reset(); 
+            })
+            .catch(error => console.error('Error:', error));
+        } else {
+            alert('Por favor, forneça um URL.');
+        }
+    }
+
+    function viewFile() {
+        fetch('/view-file')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('file-content').innerText = data;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+
+</body>
+</html>
