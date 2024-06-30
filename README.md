@@ -12,7 +12,8 @@ npm install express body-parser
 ##Clone o repositório.
 
 ##Permissões
-Certifique-se de que o arquivo /etc/transmission-rss.conf tem as permissões corretas para ser lido e escrito pelo servidor Node.js. Você pode precisar ajustar as permissões usando chmod e chown:
+Certifique-se de que o arquivo /etc/transmission-rss.conf tem as permissões corretas para ser lido e escrito pelo servidor Node.js. 
+Você pode precisar ajustar as permissões usando chmod e chown:
 sudo chmod 666 /etc/transmission-rss.conf
 sudo chown <seu-usuario>:<seu-grupo> /etc/transmission-rss.conf
 
